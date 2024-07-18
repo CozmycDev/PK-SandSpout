@@ -2,6 +2,8 @@
 
 This is an addon ability for the [ProjectKorra](https://projectkorra.com/) plugin for Spigot Minecraft servers. Inspired by the original ability that was removed from core years ago.
 
+https://github.com/user-attachments/assets/9f76dea1-1db4-410b-a470-ee14e537c0e9
+
 ## Description
 
 **SandSpout** is a Sand ability that allows earthbenders to use sand itself for mobility. This move requires that you are standing on, or are over sand. Sand blocks are configured from the global PK config.
