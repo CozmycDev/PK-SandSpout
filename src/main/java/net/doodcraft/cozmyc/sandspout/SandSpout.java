@@ -276,7 +276,7 @@ public class SandSpout extends SandAbility implements AddonAbility {
         ItemStack data = new ItemStack(material);
         ParticleEffect.ITEM_CRACK.display(location, 4, 0.5, Math.random(), 0.5, 0.0D, data);
         if (material == Material.SOUL_SAND) {
-            ParticleEffect.SOUL.display(location, 1, Math.random(), Math.random(), Math.random(), 0.0D, data);
+            ParticleEffect.SOUL.display(location, 1, Math.random(), Math.random(), Math.random());
         }
     }
 
