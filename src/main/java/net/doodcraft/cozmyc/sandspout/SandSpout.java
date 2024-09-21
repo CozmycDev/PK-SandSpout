@@ -50,7 +50,7 @@ public class SandSpout extends SandAbility implements AddonAbility {
 
         this.blindnessTime = ConfigManager.defaultConfig.get().getInt("ExtraAbilities.Cozmyc.SandSpout.BlindnessTime");
         this.cooldown = ConfigManager.defaultConfig.get().getLong("ExtraAbilities.Cozmyc.SandSpout.Cooldown");
-        this.damage = ConfigManager.defaultConfig.get().getDouble("ExtraAbilities.Cozmyc.SandSpout.Damage");
+        this.damage = ConfigManager.defaultConfig.get().getDouble("ExtraAbilities.Cozmyc.SandSpout.SpoutDamage");
         this.flySpeed = ConfigManager.defaultConfig.get().getDouble("ExtraAbilities.Cozmyc.SandSpout.FlySpeed");
         this.height = ConfigManager.defaultConfig.get().getDouble("ExtraAbilities.Cozmyc.SandSpout.Height");
         this.mainSoundName = ConfigManager.defaultConfig.get().getString("ExtraAbilities.Cozmyc.SandSpout.Sound.Name");
@@ -331,7 +331,7 @@ public class SandSpout extends SandAbility implements AddonAbility {
 
     @Override
     public String getVersion() {
-        return "1.0.7";
+        return "1.0.8";
     }
 
     private void setupCollisions() {
