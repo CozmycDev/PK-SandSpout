@@ -42,15 +42,15 @@ The ability can be configured in the ProjectKorra `config.yml` file under `Extra
 ExtraAbilities:
   Cozmyc:
     SandSpout:
-      Cooldown: 0  # milliseconds
+      Cooldown: 0
       Height: 10
-      BlindnessTime: 10  # seconds
-      SpoutDamage: 1
+      BlindnessTime: 10
+      SpoutDamage: 0
       Sound:
-        Name: ENTITY_HORSE_BREATHE
-        Volume: 0.6  # acceptable values are 0.0 - 2.0
-        Pitch: 0.35  # acceptable values are 0.0 - 2.0
-      FlySpeed: 0.075
+        Name: minecraft:block.soul_sand.fall
+        Volume: 0.3
+        Pitch: 0.1
+      FlySpeed: 0.11
 ```
 
 Language options can be found in `language.yml`:
