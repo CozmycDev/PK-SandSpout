@@ -243,16 +243,16 @@ public class SandSpout extends SandAbility implements AddonAbility {
             if (effectLocation.getWorld() == null) continue;
 
             if (step < playerHeightAboveGround * 0.15) {
-                effectLocation.getWorld().spawnParticle(Particle.BLOCK_CRACK, effectLocation, 6, Math.random(), Math.random(), Math.random(), 0.0, block.getBlockData(), true);
-                effectLocation.getWorld().spawnParticle(Particle.ITEM_CRACK, effectLocation, 3, Math.random(), Math.random(), Math.random(), 0.0, new ItemStack(block.getType()), true);
-                effectLocation.getWorld().spawnParticle(Particle.BLOCK_CRACK, effectLocation, 3, Math.random(), Math.random(), Math.random(), 0.0, block.getBlockData(), true);
+                effectLocation.getWorld().spawnParticle(Particle.BLOCK, effectLocation, 6, Math.random(), Math.random(), Math.random(), 0.0, block.getBlockData(), true);
+                effectLocation.getWorld().spawnParticle(Particle.ITEM, effectLocation, 3, Math.random(), Math.random(), Math.random(), 0.0, new ItemStack(block.getType()), true);
+                effectLocation.getWorld().spawnParticle(Particle.BLOCK, effectLocation, 3, Math.random(), Math.random(), Math.random(), 0.0, block.getBlockData(), true);
             } else if (step < playerHeightAboveGround * 0.2) {
-                effectLocation.getWorld().spawnParticle(Particle.BLOCK_CRACK, effectLocation, 1, 0.5, Math.random(), 0.5, 0.0, block.getBlockData(), true);
+                effectLocation.getWorld().spawnParticle(Particle.BLOCK, effectLocation, 1, 0.5, Math.random(), 0.5, 0.0, block.getBlockData(), true);
             } else if (step < playerHeightAboveGround * 0.9) {
-                effectLocation.getWorld().spawnParticle(Particle.ITEM_CRACK, effectLocation, 1, 0.5, Math.random(), 0.5, 0.0, new ItemStack(block.getType()), true);
+                effectLocation.getWorld().spawnParticle(Particle.ITEM, effectLocation, 1, 0.5, Math.random(), 0.5, 0.0, new ItemStack(block.getType()), true);
             } else {
-                effectLocation.getWorld().spawnParticle(Particle.BLOCK_CRACK, effectLocation, 2, Math.random(), Math.min(Math.random(), 0.5), Math.random(), 0.0, block.getBlockData(), true);
-                effectLocation.getWorld().spawnParticle(Particle.ITEM_CRACK, effectLocation, 9, 0.5, Math.min(Math.random(), 0.5), 0.5, 0.0, new ItemStack(block.getType()), true);
+                effectLocation.getWorld().spawnParticle(Particle.BLOCK, effectLocation, 2, Math.random(), Math.min(Math.random(), 0.5), Math.random(), 0.0, block.getBlockData(), true);
+                effectLocation.getWorld().spawnParticle(Particle.ITEM, effectLocation, 9, 0.5, Math.min(Math.random(), 0.5), 0.5, 0.0, new ItemStack(block.getType()), true);
                 effectLocation.getWorld().spawnParticle(Particle.FALLING_DUST, effectLocation, 1, Math.random(), Math.min(Math.random(), 0.5), Math.random(), 0.0, block.getBlockData(), true);
             }
 
@@ -276,7 +276,7 @@ public class SandSpout extends SandAbility implements AddonAbility {
 
     private void displaySandParticles(Location location, Material material) {
         if (location.getWorld() == null) return;
-        location.getWorld().spawnParticle(Particle.BLOCK_CRACK, location, 4, 0.5, Math.random(), 0.5, 0.0, material.createBlockData(), true);
+        location.getWorld().spawnParticle(Particle.BLOCK, location, 4, 0.5, Math.random(), 0.5, 0.0, material.createBlockData(), true);
         if (material == Material.SOUL_SAND) {
             location.getWorld().spawnParticle(Particle.SOUL, location, 1, Math.random(), Math.random(), Math.random(), 0.02f, null, true);
         }
