@@ -5,10 +5,10 @@ import com.projectkorra.projectkorra.GeneralMethods;
 import com.projectkorra.projectkorra.ProjectKorra;
 import com.projectkorra.projectkorra.ability.*;
 import com.projectkorra.projectkorra.ability.util.Collision;
+import com.projectkorra.projectkorra.attribute.Attribute;
 import com.projectkorra.projectkorra.configuration.ConfigManager;
 import com.projectkorra.projectkorra.earthbending.passive.DensityShift;
 import com.projectkorra.projectkorra.util.DamageHandler;
-import com.projectkorra.projectkorra.util.ParticleEffect;
 
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -29,11 +29,17 @@ public class SandSpout extends SandAbility implements AddonAbility {
 
     private final List<Location> currentSpoutLocations;
 
-    private final int blindnessTime;
+    @Attribute("BlindnessDuration")
+    private final int blindnessDuration;
+    @Attribute(Attribute.COOLDOWN)
     private final long cooldown;
+    @Attribute(Attribute.DAMAGE)
     private final double damage;
+    @Attribute(Attribute.SPEED)
     private final double flySpeed;
+    @Attribute("Height")
     private final double height;
+
     private final String mainSoundName;
     private final double mainSoundVolume;
     private final double mainSoundPitch;
@@ -48,7 +54,7 @@ public class SandSpout extends SandAbility implements AddonAbility {
 
         this.currentSpoutLocations = new ArrayList<>();
 
-        this.blindnessTime = ConfigManager.defaultConfig.get().getInt("ExtraAbilities.Cozmyc.SandSpout.BlindnessTime");
+        this.blindnessDuration = ConfigManager.defaultConfig.get().getInt("ExtraAbilities.Cozmyc.SandSpout.BlindnessTime");
         this.cooldown = ConfigManager.defaultConfig.get().getLong("ExtraAbilities.Cozmyc.SandSpout.Cooldown");
         this.damage = ConfigManager.defaultConfig.get().getDouble("ExtraAbilities.Cozmyc.SandSpout.SpoutDamage");
         this.flySpeed = ConfigManager.defaultConfig.get().getDouble("ExtraAbilities.Cozmyc.SandSpout.FlySpeed");
@@ -85,16 +91,6 @@ public class SandSpout extends SandAbility implements AddonAbility {
         if (this.lastBlinded != null) this.lastBlinded.clear();
         resetFlight();
         super.remove();
-    }
-
-    @Override
-    public String getInstructions() {
-        return "You must be standing on sand to use this ability. Left Click to activate, Space to go up, Shift to go down.";
-    }
-
-    @Override
-    public String getDescription() {
-        return "An advanced Sandbending skill that takes advantage of the properties of the element to form a mobile column of sand. Sandbenders are able to use this ability for travelling, evasion, to gain height advantage in combat and to build. The erosion generated from the column will blind and damage entities standing below.";
     }
 
     @Override
@@ -244,18 +240,20 @@ public class SandSpout extends SandAbility implements AddonAbility {
             }
             soundCounter++;
 
+            if (effectLocation.getWorld() == null) continue;
+
             if (step < playerHeightAboveGround * 0.15) {
-                ParticleEffect.BLOCK_CRACK.display(effectLocation, 6, Math.random(), Math.random(), Math.random(), 0.0, block.getBlockData());
-                ParticleEffect.ITEM_CRACK.display(effectLocation, 3, Math.random(), Math.random(), Math.random(), 0.0D, new ItemStack(block.getType()));
-                ParticleEffect.FALLING_DUST.display(effectLocation, 3, Math.random(), Math.random(), Math.random(), 0.0, block.getBlockData());
+                effectLocation.getWorld().spawnParticle(Particle.BLOCK_CRACK, effectLocation, 6, Math.random(), Math.random(), Math.random(), 0.0, block.getBlockData(), true);
+                effectLocation.getWorld().spawnParticle(Particle.ITEM_CRACK, effectLocation, 3, Math.random(), Math.random(), Math.random(), 0.0, new ItemStack(block.getType()), true);
+                effectLocation.getWorld().spawnParticle(Particle.BLOCK_CRACK, effectLocation, 3, Math.random(), Math.random(), Math.random(), 0.0, block.getBlockData(), true);
             } else if (step < playerHeightAboveGround * 0.2) {
-                ParticleEffect.BLOCK_CRACK.display(effectLocation, 1, 0.5, Math.random(), 0.5, 0.0, block.getBlockData());
+                effectLocation.getWorld().spawnParticle(Particle.BLOCK_CRACK, effectLocation, 1, 0.5, Math.random(), 0.5, 0.0, block.getBlockData(), true);
             } else if (step < playerHeightAboveGround * 0.9) {
-                ParticleEffect.ITEM_CRACK.display(effectLocation, 1, 0.5, Math.random(), 0.5, 0.0D, new ItemStack(block.getType()));
+                effectLocation.getWorld().spawnParticle(Particle.ITEM_CRACK, effectLocation, 1, 0.5, Math.random(), 0.5, 0.0, new ItemStack(block.getType()), true);
             } else {
-                ParticleEffect.BLOCK_CRACK.display(effectLocation, 2, Math.random(), Math.min(Math.random(), 0.5), Math.random(), 0.0, block.getBlockData());
-                ParticleEffect.ITEM_CRACK.display(effectLocation, 9, 0.5, Math.min(Math.random(), 0.5), 0.5, 0.0D, new ItemStack(block.getType()));
-                ParticleEffect.FALLING_DUST.display(effectLocation, 1, Math.random(), Math.min(Math.random(), 0.5), Math.random(), 0.0, block.getBlockData());
+                effectLocation.getWorld().spawnParticle(Particle.BLOCK_CRACK, effectLocation, 2, Math.random(), Math.min(Math.random(), 0.5), Math.random(), 0.0, block.getBlockData(), true);
+                effectLocation.getWorld().spawnParticle(Particle.ITEM_CRACK, effectLocation, 9, 0.5, Math.min(Math.random(), 0.5), 0.5, 0.0, new ItemStack(block.getType()), true);
+                effectLocation.getWorld().spawnParticle(Particle.FALLING_DUST, effectLocation, 1, Math.random(), Math.min(Math.random(), 0.5), Math.random(), 0.0, block.getBlockData(), true);
             }
 
             displaySandParticles(effectLocation, block.getType());
@@ -269,14 +267,18 @@ public class SandSpout extends SandAbility implements AddonAbility {
 
     private void playSound(Location location) {
         if (location.getWorld() == null) return;
-        location.getWorld().playSound(location, Sound.valueOf(this.mainSoundName), (float) this.mainSoundVolume, (float) this.mainSoundPitch);
+        NamespacedKey key = NamespacedKey.fromString(this.mainSoundName);
+        if (key == null) return;
+        Sound sound = Registry.SOUNDS.get(key);
+        if (sound == null) return;
+        location.getWorld().playSound(location, sound, (float) this.mainSoundVolume, (float) this.mainSoundPitch);
     }
 
     private void displaySandParticles(Location location, Material material) {
-        ItemStack data = new ItemStack(material);
-        ParticleEffect.ITEM_CRACK.display(location, 4, 0.5, Math.random(), 0.5, 0.0D, data);
+        if (location.getWorld() == null) return;
+        location.getWorld().spawnParticle(Particle.BLOCK_CRACK, location, 4, 0.5, Math.random(), 0.5, 0.0, material.createBlockData(), true);
         if (material == Material.SOUL_SAND) {
-            ParticleEffect.SOUL.display(location, 1, Math.random(), Math.random(), Math.random());
+            location.getWorld().spawnParticle(Particle.SOUL, location, 1, Math.random(), Math.random(), Math.random(), 0.02f, null, true);
         }
     }
 
@@ -288,7 +290,7 @@ public class SandSpout extends SandAbility implements AddonAbility {
                 long currentTime = System.currentTimeMillis();
                 long lastHurtTime = this.lastBlinded.getOrDefault(entity.getUniqueId(), 0L);
                 if (currentTime - lastHurtTime >= 1000) {
-                    ((LivingEntity) entity).addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, this.blindnessTime * 20, 1));
+                    ((LivingEntity) entity).addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, this.blindnessDuration * 20, 1));
                     DamageHandler.damageEntity(entity, this.damage, this);
                     this.lastBlinded.put(entity.getUniqueId(), currentTime);
                 }
@@ -304,19 +306,25 @@ public class SandSpout extends SandAbility implements AddonAbility {
     @Override
     public void load() {
         ProjectKorra.plugin.getServer().getPluginManager().registerEvents(new SandSpoutListener(), ProjectKorra.plugin);
-
+        
         ConfigManager.defaultConfig.get().addDefault("ExtraAbilities.Cozmyc.SandSpout.Cooldown", 0);
         ConfigManager.defaultConfig.get().addDefault("ExtraAbilities.Cozmyc.SandSpout.Height", 10);
         ConfigManager.defaultConfig.get().addDefault("ExtraAbilities.Cozmyc.SandSpout.BlindnessTime", 10);
-        ConfigManager.defaultConfig.get().addDefault("ExtraAbilities.Cozmyc.SandSpout.SpoutDamage", 1);
-        ConfigManager.defaultConfig.get().addDefault("ExtraAbilities.Cozmyc.SandSpout.Sound.Name", "ENTITY_HORSE_BREATHE");
-        ConfigManager.defaultConfig.get().addDefault("ExtraAbilities.Cozmyc.SandSpout.Sound.Volume", 0.6);
-        ConfigManager.defaultConfig.get().addDefault("ExtraAbilities.Cozmyc.SandSpout.Sound.Pitch", 0.35);
-        ConfigManager.defaultConfig.get().addDefault("ExtraAbilities.Cozmyc.SandSpout.FlySpeed", 0.075);
+        ConfigManager.defaultConfig.get().addDefault("ExtraAbilities.Cozmyc.SandSpout.SpoutDamage", 0);
+        ConfigManager.defaultConfig.get().addDefault("ExtraAbilities.Cozmyc.SandSpout.Sound.Name", "minecraft:block.soul_sand.fall");
+        ConfigManager.defaultConfig.get().addDefault("ExtraAbilities.Cozmyc.SandSpout.Sound.Volume", 0.3);
+        ConfigManager.defaultConfig.get().addDefault("ExtraAbilities.Cozmyc.SandSpout.Sound.Pitch", 0.1);
+        ConfigManager.defaultConfig.get().addDefault("ExtraAbilities.Cozmyc.SandSpout.FlySpeed", 0.11);
+        ConfigManager.defaultConfig.save();
+
+        ConfigManager.languageConfig.get().addDefault("Abilities.Earth.SandSpout.DeathMessage", "{victim} was buried alive under {attacker}'s {ability}");
+        ConfigManager.languageConfig.get().addDefault("Abilities.Earth.SandSpout.Description", "An advanced Sandbending skill that takes advantage of the properties of the element to form a mobile column of sand. Sandbenders are able to use this ability for travelling, evasion, to gain height advantage in combat and to build. The erosion generated from the column will blind and damage entities standing below.");
+        ConfigManager.languageConfig.get().addDefault("Abilities.Earth.SandSpout.Instructions", "You must be standing on sand to use this ability. Left Click to activate, Space to go up, Shift to go down.");
+        ConfigManager.languageConfig.save();
 
         setupCollisions();
 
-        ProjectKorra.plugin.getLogger().info("Loaded SandSpout by Cozmyc and LuxaelNI!");
+        ProjectKorra.plugin.getLogger().info("Loaded SandSpout " + getVersion() + " by Cozmyc and LuxaelNI!");
     }
 
     @Override
@@ -331,7 +339,7 @@ public class SandSpout extends SandAbility implements AddonAbility {
 
     @Override
     public String getVersion() {
-        return "1.0.8";
+        return "1.1.0";
     }
 
     private void setupCollisions() {
