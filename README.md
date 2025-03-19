@@ -32,13 +32,12 @@ https://github.com/user-attachments/assets/9f76dea1-1db4-410b-a470-ee14e537c0e9
 
 ## Compatibility
 
-- **Minecraft Version**: Tested and working on MC 1.20.4.
-- **ProjectKorra Version**: Tested and working on PK 1.11.2 and 1.11.3. Might support earlier versions too.
+- **Minecraft Version**: Tested and working on MC 1.20.4 and 1.21.4.
+- **ProjectKorra Version**: Tested and working on PK 1.11.2, 1.11.3, and 1.12 BETA 12/13 and PRE RELEASE 3.
 
 ## Configuration
 
 The ability can be configured in the ProjectKorra `config.yml` file under `ExtraAbilities.Cozmyc.SandSpout`:
-
 ```yaml
 ExtraAbilities:
   Cozmyc:
@@ -52,3 +51,19 @@ ExtraAbilities:
         Volume: 0.6  # acceptable values are 0.0 - 2.0
         Pitch: 0.35  # acceptable values are 0.0 - 2.0
       FlySpeed: 0.075
+```
+
+Language options can be found in `language.yml`:
+```yaml
+Abilities:
+  Earth:
+    SandSpout:
+      DeathMessage: '{victim} was buried alive under {attacker}''s {ability}'
+      Description: An advanced Sandbending skill that takes advantage of the properties
+        of the element to form a mobile column of sand. Sandbenders are able to use
+        this ability for travelling, evasion, to gain height advantage in combat and
+        to build. The erosion generated from the column will blind and damage entities
+        standing below.
+      Instructions: You must be standing on sand to use this ability. Left Click to
+        activate, Space to go up, Shift to go down.
+```
